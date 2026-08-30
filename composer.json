@@ -1,0 +1,22 @@
+{
+  "name": "blmsoft/blmpay-php",
+  "description": "Official PHP SDK for the BLMPay REST API",
+  "type": "library",
+  "license": "MIT",
+  "version": "0.1.0",
+  "require": {
+    "php": ">=8.1",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "BLMSoft\\BLMPay\\": "src/BLMSoft/BLMPay/"
+    }
+  },
+  "homepage": "https://github.com/Winnie7676/blmpay-sdk-php",
+  "support": {
+    "issues": "https://github.com/Winnie7676/blmpay-sdk-php/issues",
+    "source": "https://github.com/Winnie7676/blmpay-sdk-php"
+  }
+}
