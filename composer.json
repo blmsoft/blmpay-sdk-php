@@ -3,7 +3,27 @@
   "description": "Official PHP SDK for the BLMPay REST API",
   "type": "library",
   "license": "MIT",
-  "version": "0.1.0",
+  "keywords": [
+    "blmpay",
+    "payments",
+    "payment-gateway",
+    "mobile-money",
+    "payouts",
+    "tanzania",
+    "api",
+    "sdk"
+  ],
+  "homepage": "https://github.com/Winnie7676/blmpay-sdk-php",
+  "authors": [
+    {
+      "name": "BLMSoft",
+      "homepage": "https://blmtec.co.tz"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/Winnie7676/blmpay-sdk-php/issues",
+    "source": "https://github.com/Winnie7676/blmpay-sdk-php"
+  },
   "require": {
     "php": ">=8.1",
     "ext-curl": "*",
@@ -14,9 +34,9 @@
       "BLMSoft\\BLMPay\\": "src/BLMSoft/BLMPay/"
     }
   },
-  "homepage": "https://github.com/Winnie7676/blmpay-sdk-php",
-  "support": {
-    "issues": "https://github.com/Winnie7676/blmpay-sdk-php/issues",
-    "source": "https://github.com/Winnie7676/blmpay-sdk-php"
+  "extra": {
+    "branch-alias": {
+      "dev-main": "0.1.x-dev"
+    }
   }
 }
