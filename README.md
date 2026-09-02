@@ -17,7 +17,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 use BLMSoft\BLMPay\Client;
 
-$blmpay = new Client(getenv('BLMPAY_API_KEY'));
+$blmpay = new Client(
+    getenv('BLMPAY_API_KEY'),
+    'https://pay.blmtec.co.tz/api/v1',
+    30,
+    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null
+);
+
 $balance = $blmpay->getBalance();
 ```
 
@@ -30,19 +36,46 @@ composer require blmsoft/blmpay-php:dev-main
 
 ## Without Composer
 
-You can also copy the SDK into your project and use the included standalone autoloader:
-
 ```php
 require __DIR__ . '/vendor/blmpay-sdk/autoload.php';
-$blmpay = new BLMSoft\BLMPay\Client(getenv('BLMPAY_API_KEY'));
+
+$blmpay = new BLMSoft\BLMPay\Client(
+    getenv('BLMPAY_API_KEY'),
+    'https://pay.blmtec.co.tz/api/v1',
+    30,
+    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null
+);
 ```
+
+## Domain-bound API keys
+
+New BLMPay API keys can be restricted to one HTTPS integration domain. Pass the exact HTTPS integration URL saved on the key as the fourth constructor argument, or call:
+
+```php
+$blmpay->setIntegrationOrigin('https://example.com');
+```
+
+The SDK then automatically sends:
+
+```http
+X-BLMPay-Origin: https://example.com
+```
+
+A mismatched domain can be rejected with `403 integration_domain_not_allowed`. A restricted key with no origin can return `403 integration_origin_required`.
+
+Existing legacy API keys without a configured domain remain backward compatible and can continue using the SDK without this option.
 
 ## Example: create a payment
 
 ```php
 use BLMSoft\BLMPay\Client;
 
-$blmpay = new Client(getenv('BLMPAY_API_KEY'));
+$blmpay = new Client(
+    getenv('BLMPAY_API_KEY'),
+    'https://pay.blmtec.co.tz/api/v1',
+    30,
+    'https://example.com'
+);
 
 $payment = $blmpay->createPayment([
     'payment_type' => 'mobile',
@@ -66,7 +99,7 @@ The SDK covers BLMPay API v1 for payments, balance, payment links, invoices, pay
 
 ## Security
 
-Never place a live BLMPay secret key in source control, browser JavaScript, a public Flutter application, or a public repository. Keep merchant secret keys server-side and use a unique idempotency key for each new payment or payout attempt.
+Never place a live BLMPay API key in source control, browser JavaScript, a public Flutter application, APK/IPA or a public repository. Keep privileged merchant credentials server-side and use a unique idempotency key for each new payment or payout attempt.
 
 ## Links
 
