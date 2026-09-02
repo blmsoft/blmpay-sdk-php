@@ -3,14 +3,28 @@ namespace BLMSoft\BLMPay;
 
 final class Client
 {
+    private ?string $integrationOrigin;
+
     public function __construct(
         private string $apiKey,
         private string $baseUrl = 'https://pay.blmtec.co.tz/api/v1',
-        private int $timeoutSeconds = 30
+        private int $timeoutSeconds = 30,
+        ?string $integrationOrigin = null
     ) {
         $this->apiKey = trim($this->apiKey);
         $this->baseUrl = rtrim($this->baseUrl, '/');
         if ($this->apiKey === '') throw new \InvalidArgumentException('BLMPay API key is required.');
+        $this->integrationOrigin = $this->normalizeIntegrationOrigin($integrationOrigin);
+    }
+
+    /**
+     * Configure the HTTPS integration URL/domain bound to this API key.
+     * The SDK will send it as X-BLMPay-Origin on every request.
+     */
+    public function setIntegrationOrigin(?string $integrationOrigin): self
+    {
+        $this->integrationOrigin = $this->normalizeIntegrationOrigin($integrationOrigin);
+        return $this;
     }
 
     public function listPayments(array $query = []): array { return $this->request('GET','/payments',null,$query); }
@@ -41,6 +55,7 @@ final class Client
         $url = $this->baseUrl . '/' . ltrim($path,'/');
         if ($query) $url .= '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
         $headers = ['Authorization: Bearer '.$this->apiKey, 'Accept: application/json'];
+        if ($this->integrationOrigin !== null) $headers[] = 'X-BLMPay-Origin: '.$this->integrationOrigin;
         if ($payload !== null) $headers[] = 'Content-Type: application/json';
         if ($idempotencyKey !== null && trim($idempotencyKey) !== '') $headers[] = 'Idempotency-Key: '.trim($idempotencyKey);
         $ch = curl_init($url);
@@ -55,5 +70,19 @@ final class Client
         if (!is_array($data)) throw new Exception('BLMPay returned an invalid JSON response.',$status,'invalid_response',['raw'=>$raw]);
         if ($status < 200 || $status >= 300) throw new Exception((string)($data['message']??'BLMPay request failed.'),$status,$data['error_code']??null,$data);
         return $data;
+    }
+
+    private function normalizeIntegrationOrigin(?string $origin): ?string
+    {
+        $origin = trim((string)$origin);
+        if ($origin === '') return null;
+        if (!preg_match('#^https://#i', $origin)) {
+            throw new \InvalidArgumentException('BLMPay integrationOrigin must be a full HTTPS URL, for example https://example.com.');
+        }
+        $parts = parse_url($origin);
+        if (!is_array($parts) || empty($parts['host'])) {
+            throw new \InvalidArgumentException('BLMPay integrationOrigin is not a valid URL.');
+        }
+        return $origin;
     }
 }
