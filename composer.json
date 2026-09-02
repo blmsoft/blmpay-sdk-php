@@ -1,6 +1,6 @@
 {
   "name": "blmsoft/blmpay-php",
-  "description": "Official PHP SDK for the BLMPay REST API",
+  "description": "Official PHP SDK for the BLMPay REST API with domain-bound API key support",
   "type": "library",
   "license": "MIT",
   "keywords": [
@@ -36,7 +36,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "0.1.x-dev"
+      "dev-main": "0.2.x-dev"
     }
   }
 }
