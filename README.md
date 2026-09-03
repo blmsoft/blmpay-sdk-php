@@ -30,7 +30,7 @@ $balance = $blmpay->getBalance();
 ### Install directly from GitHub before Packagist publication
 
 ```bash
-composer config repositories.blmpay vcs https://github.com/Winnie7676/blmpay-sdk-php
+composer config repositories.blmpay vcs https://github.com/blmsoft/blmpay-sdk-php
 composer require blmsoft/blmpay-php:dev-main
 ```
 
@@ -103,7 +103,7 @@ Never place a live BLMPay API key in source control, browser JavaScript, a publi
 
 ## Links
 
-- BLMPay OpenAPI: https://github.com/Winnie7676/blmpay-openapi
-- BLMPay MCP: https://github.com/Winnie7676/blmpay-mcp
+- BLMPay OpenAPI: https://github.com/blmsoft/blmpay-openapi
+- BLMPay MCP: https://github.com/blmsoft/blmpay-mcp
 
 MIT License. Powered by BLMSoft.
