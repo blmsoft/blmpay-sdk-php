@@ -1,6 +1,8 @@
 # BLMPay PHP SDK
 
-Official PHP SDK for BLMPay API v1.
+> **API V1 deprecation notice:** BLMPay API v1 is legacy and is scheduled to be retired on **15 November 2026 at 23:59 EAT**. New integrations must use **API v2 HMAC**. Migrate before the retirement date.
+
+Official PHP SDK for BLMPay API v2.
 
 ## Installation with Composer
 
@@ -19,9 +21,10 @@ use BLMSoft\BLMPay\Client;
 
 $blmpay = new Client(
     getenv('BLMPAY_API_KEY'),
-    'https://pay.blmtec.co.tz/api/v1',
+    null,
     30,
-    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null
+    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null,
+    getenv('BLMPAY_API_SECRET')
 );
 
 $balance = $blmpay->getBalance();
@@ -41,9 +44,10 @@ require __DIR__ . '/vendor/blmpay-sdk/autoload.php';
 
 $blmpay = new BLMSoft\BLMPay\Client(
     getenv('BLMPAY_API_KEY'),
-    'https://pay.blmtec.co.tz/api/v1',
+    null,
     30,
-    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null
+    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null,
+    getenv('BLMPAY_API_SECRET')
 );
 ```
 
@@ -72,9 +76,10 @@ use BLMSoft\BLMPay\Client;
 
 $blmpay = new Client(
     getenv('BLMPAY_API_KEY'),
-    'https://pay.blmtec.co.tz/api/v1',
+    null,
     30,
-    'https://example.com'
+    'https://example.com',
+    getenv('BLMPAY_API_SECRET')
 );
 
 $payment = $blmpay->createPayment([
@@ -95,7 +100,27 @@ $payment = $blmpay->createPayment([
 
 ## API coverage
 
-The SDK covers BLMPay API v1 for payments, balance, payment links, invoices, payouts, payout fee quotes, supported banks, recipient name lookup, webhooks, USDT activation, USDT address, transfers and withdrawals.
+The SDK covers BLMPay API v2 for payments, balance, payment links, invoices, payouts, payout fee quotes, supported banks, recipient name lookup, webhooks, USDT activation, USDT address, transfers and withdrawals.
+
+## API v2 HMAC authentication
+
+API v2 signs each request with the public API key plus the HMAC secret. The SDK automatically sends `Authorization: BLMPay-HMAC <PUBLIC_API_KEY>`, `X-BLMPay-Timestamp`, `X-BLMPay-Nonce`, and `X-BLMPay-Signature`.
+
+The canonical string is:
+
+```text
+METHOD
+REQUEST_TARGET
+TIMESTAMP
+NONCE
+SHA256(RAW_BODY)
+```
+
+Restricted-domain checks remain enabled as a secondary security layer.
+
+### Legacy API v1
+
+Existing Bearer-key integrations may keep using v1 during the migration window, but API v1 is scheduled for retirement on **15 November 2026 at 23:59 EAT**. For temporary v1 use, construct the client with `apiVersion: 'v1'` and no HMAC secret. New integrations must use v2.
 
 ## Security
 
