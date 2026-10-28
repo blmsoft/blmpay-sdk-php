@@ -3,10 +3,9 @@ require __DIR__.'/../autoload.php';
 use BLMSoft\BLMPay\Client;
 
 $blmpay = new Client(
-    getenv('BLMPAY_API_KEY'),
-    'https://pay.blmtec.co.tz/api/v1',
-    30,
-    getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null
+    apiKey: getenv('BLMPAY_API_KEY'),
+    integrationOrigin: getenv('BLMPAY_INTEGRATION_ORIGIN') ?: null,
+    hmacSecret: getenv('BLMPAY_API_SECRET')
 );
 
 $payment = $blmpay->createPayment([
